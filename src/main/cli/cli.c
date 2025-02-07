@@ -6899,7 +6899,7 @@ void cliEnter(serialPort_t *serialPort, bool interactive)
 #else
         cliPrintLine("\r\nCLI");
 #endif
-        // arming flag not released if exiting cli with no reboot for safety
+        // arming flag not released if exiting cli with no reboot for safety Here
         setArmingDisabled(ARMING_DISABLED_CLI);
         cliPrompt();
 

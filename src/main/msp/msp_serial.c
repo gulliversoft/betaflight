@@ -460,7 +460,7 @@ static void mspProcessPendingRequest(mspPort_t * mspPort)
         mspPort->pendingRequest = MSP_PENDING_NONE;
         mspPort->portState = PORT_CLI_ACTIVE;
 
-        cliEnter(mspPort->port, true);
+        cliEnter(mspPort->port, true); //here
         break;
 #endif
 
@@ -552,7 +552,7 @@ void mspSerialProcess(mspEvaluateNonMspData_e evaluateNonMspData, mspProcessComm
                     mspPort->pendingRequest = MSP_PENDING_CLI;
                 } else if (c == 0x2) {
                     mspPort->portState = PORT_CLI_CMD;
-                    cliEnter(mspPort->port, false);
+                    cliEnter(mspPort->port, false); //here
 #endif
                 }
             }
