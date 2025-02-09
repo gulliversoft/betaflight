@@ -175,6 +175,7 @@ bool cliMode = false;
 
 static serialPort_t *cliPort = NULL;
 static bool cliInteractive = false;
+static bool cliForwardDroneID = false;
 static timeMs_t cliEntryTime = 0;
 
 // Space required to set array parameters
@@ -6725,6 +6726,11 @@ static void processCharacter(const char c)
         // Strip comment starting with # from line
         char *p = cliBuffer;
         p = strchr(p, '#');
+        if(NULL == p)
+        {
+          p = strchr(p, '@');
+          cliForwardDroneID = true;
+        }
         if (NULL != p) {
             bufferIndex = (uint32_t)(p - cliBuffer);
         }
@@ -6881,7 +6887,7 @@ static void cliExit(const bool reboot)
 void cliEnter(serialPort_t *serialPort, bool interactive)
 {
     cliMode = true;
-    cliInteractive = interactive;
+    cliInteractive = cliForwardDroneID?true:interactive;
     cliPort = serialPort;
     cliEntryTime = millis();
     cliClearInputBuffer();
@@ -6900,7 +6906,10 @@ void cliEnter(serialPort_t *serialPort, bool interactive)
         cliPrintLine("\r\nCLI");
 #endif
         // arming flag not released if exiting cli with no reboot for safety Here
-        setArmingDisabled(ARMING_DISABLED_CLI);
+        if(!cliForwardDroneID)
+        {
+           setArmingDisabled(ARMING_DISABLED_CLI);
+        }
         cliPrompt();
 
 #ifdef USE_CLI_BATCH
