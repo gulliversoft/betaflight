@@ -175,6 +175,7 @@ bool cliMode = false;
 #include "cli.h"
 
 static serialPort_t *cliPort = NULL;
+static bool cliForwardDroneID = false;
 
 // Space required to set array parameters
 #define CLI_IN_BUFFER_SIZE 256
@@ -6654,6 +6655,11 @@ static void processCharacter(const char c)
         // Strip comment starting with # from line
         char *p = cliBuffer;
         p = strchr(p, '#');
+        if(NULL == p)
+        {
+          p = strchr(p, '@');
+          cliForwardDroneID = true;
+        }
         if (NULL != p) {
             bufferIndex = (uint32_t)(p - cliBuffer);
         }
@@ -6785,8 +6791,10 @@ void cliEnter(serialPort_t *serialPort)
 #else
     cliPrintLine("\r\nCLI");
 #endif
-    setArmingDisabled(ARMING_DISABLED_CLI);
-
+    if(!cliForwardDroneID)
+    {
+       setArmingDisabled(ARMING_DISABLED_CLI);
+    }
     cliPrompt();
 
 #ifdef USE_CLI_BATCH
