@@ -6657,8 +6657,13 @@ static void processCharacter(const char c)
         p = strchr(p, '#');
         if(NULL == p)
         {
-          p = strchr(p, '@');
-          cliForwardDroneID = true;
+          p = strchr(cliBuffer, '@');
+          if (NULL != p)
+          {
+            cliForwardDroneID = true;
+          //memset(cliBuffer, 0, sizeof(cliBuffer));
+          //cliSerialPassthrough("serialpasstrough", "5 57600");
+          }
         }
         if (NULL != p) {
             bufferIndex = (uint32_t)(p - cliBuffer);
